@@ -35,6 +35,8 @@ class KatalogController extends Controller
     {
         abort_if(!$product->is_active, 404);
 
+        $product->load('images');
+
         $related = Product::where('is_active', true)
             ->where('id', '!=', $product->id)
             ->where('category_id', $product->category_id)

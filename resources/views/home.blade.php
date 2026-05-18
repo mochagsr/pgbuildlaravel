@@ -5,54 +5,61 @@
 @push('styles')
 <style>
     .hero-slide { display: none; }
-    .hero-slide.active { display: flex; }
+    .hero-slide.active { display: flex; flex-direction: row; }
+    @media (max-width: 768px) {
+        .hero-slide.active { flex-direction: column; }
+        .hero-slide.active > div:last-child { flex: none !important; max-width: 100% !important; }
+    }
 </style>
 @endpush
 
 @section('content')
 
 {{-- Hero Section: Split Layout --}}
-<div class="bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 relative overflow-hidden">
+<div style="background: linear-gradient(135deg, #0c1445 0%, #1e3a8a 60%, #1d4ed8 100%); position:relative; overflow:hidden;">
     {{-- Slides --}}
     <div id="hero-wrapper">
         @php $banners = ['banner1.webp','banner2.webp','banner3.webp']; @endphp
         @foreach($banners as $i => $banner)
-        <div class="hero-slide {{ $i === 0 ? 'active' : '' }} flex-col md:flex-row items-center max-w-7xl mx-auto px-6 py-10 md:py-6 gap-6">
+        <div class="hero-slide {{ $i === 0 ? 'active' : '' }}"
+             style="align-items:center; gap:2rem; padding:2rem 2rem 1rem; max-width:1280px; margin:0 auto; box-sizing:border-box;">
             {{-- Teks kiri --}}
-            <div class="flex-1 text-white text-center md:text-left">
-                <div class="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-3">CV. Pustaka Grafika</div>
-                <h1 class="text-3xl md:text-4xl font-bold leading-tight mb-4">
+            <div style="flex:1; color:#fff; min-width:0;">
+                <div style="color:#f97316; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.75rem;">CV. Pustaka Grafika</div>
+                <h1 style="font-size:clamp(1.6rem,3.5vw,2.8rem); font-weight:800; line-height:1.2; margin-bottom:1rem; color:#fff;">
                     Mitra Mencerdaskan<br>Anak Bangsa
                 </h1>
-                <p class="text-blue-200 text-sm md:text-base mb-6 leading-relaxed">
+                <p style="color:#bfdbfe; font-size:0.95rem; margin-bottom:1.5rem; line-height:1.7;">
                     Produsen percetakan offset dan penyedia buku pelajaran berkualitas. Melayani SD, SMP, SMA/SMK sejak 2007.
                 </p>
-                <div class="flex gap-3 justify-center md:justify-start flex-wrap">
+                <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
                     <a href="{{ route('katalog.index') }}"
-                       class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2.5 rounded-lg transition text-sm">
+                       style="background:#f97316; color:#fff; font-weight:600; padding:0.65rem 1.5rem; border-radius:0.5rem; font-size:0.875rem; text-decoration:none; display:inline-block;"
+                       onmouseover="this.style.background='#ea6c10'" onmouseout="this.style.background='#f97316'">
                         Lihat Katalog
                     </a>
                     <a href="https://wa.me/62811371171" target="_blank"
-                       class="border border-white/40 hover:bg-white/10 text-white font-semibold px-6 py-2.5 rounded-lg transition text-sm flex items-center gap-2">
-                        <i class="fab fa-whatsapp text-green-400"></i> WhatsApp
+                       style="border:1px solid rgba(255,255,255,0.4); color:#fff; font-weight:600; padding:0.65rem 1.5rem; border-radius:0.5rem; font-size:0.875rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem;">
+                        <i class="fab fa-whatsapp" style="color:#4ade80;"></i> WhatsApp
                     </a>
                 </div>
             </div>
             {{-- Gambar kanan --}}
-            <div class="w-full md:w-auto md:max-w-sm lg:max-w-md shrink-0">
+            <div style="flex:0 0 55%; max-width:55%;">
                 <img src="{{ asset('images/banner/' . $banner) }}" alt="Banner {{ $i+1 }}"
-                     class="w-full h-auto rounded-xl shadow-2xl">
+                     style="width:100%; height:auto; border-radius:0.75rem; box-shadow: 0 25px 50px rgba(0,0,0,0.4); display:block;">
             </div>
         </div>
         @endforeach
     </div>
 
     {{-- Dots --}}
-    <div class="flex justify-center gap-2 pb-5">
+    <div style="display:flex; justify-content:center; gap:0.5rem; padding-bottom:1.25rem;">
         @foreach($banners as $i => $b)
         <button onclick="goHero({{ $i }})"
-                class="hero-dot w-2.5 h-2.5 rounded-full transition {{ $i === 0 ? 'bg-orange-400' : 'bg-white/40' }}"
-                data-index="{{ $i }}"></button>
+                class="hero-dot"
+                data-index="{{ $i }}"
+                style="width:10px; height:10px; border-radius:50%; border:none; cursor:pointer; background:{{ $i === 0 ? '#f97316' : 'rgba(255,255,255,0.4)' }};"></button>
         @endforeach
     </div>
 </div>
@@ -179,22 +186,15 @@
             <p class="text-gray-500 text-sm">Selain buku pelajaran, kami juga menyediakan berbagai produk percetakan</p>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            @php
-            $produkLain = [
-                ['img' => 'buku-tulis.jpg', 'label' => 'Buku Tulis'],
-                ['img' => 'kalender-dinding.jpg', 'label' => 'Kalender Dinding'],
-                ['img' => 'kalender-kerja-duduk-2023.jpg', 'label' => 'Kalender Kerja'],
-                ['img' => 'cover-detak-detik-2021.jpg', 'label' => 'Majalah Sekolah'],
-                ['img' => 'cover-block-name.jpg', 'label' => 'Block Name'],
-            ];
-            @endphp
-            @foreach($produkLain as $item)
-            @if(file_exists(public_path('images/produklain/' . $item['img'])))
-            <div class="bg-white rounded-xl shadow overflow-hidden hover:shadow-md transition">
-                <img src="{{ asset('images/produklain/' . $item['img']) }}" alt="{{ $item['label'] }}" class="w-full h-40 object-cover">
-                <div class="p-3 text-center text-sm font-semibold text-gray-700">{{ $item['label'] }}</div>
-            </div>
-            @endif
+            @foreach($produkLainnya as $item)
+            <a href="{{ route('katalog.show', $item->id) }}"
+               class="bg-white rounded-xl shadow overflow-hidden hover:shadow-md transition hover:-translate-y-1 group">
+                <div class="aspect-[3/4] bg-gray-100 overflow-hidden">
+                    <img src="{{ $item->cover_url }}" alt="{{ $item->judul }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-3 text-center text-sm font-semibold text-gray-700 line-clamp-2">{{ $item->judul }}</div>
+            </a>
             @endforeach
         </div>
     </div>
@@ -228,10 +228,10 @@
 
     function goHero(n) {
         heroSlides[heroIndex].classList.remove('active');
-        heroDots[heroIndex].classList.replace('bg-orange-400', 'bg-white/40');
+        heroDots[heroIndex].style.background = 'rgba(255,255,255,0.4)';
         heroIndex = n;
         heroSlides[heroIndex].classList.add('active');
-        heroDots[heroIndex].classList.replace('bg-white/40', 'bg-orange-400');
+        heroDots[heroIndex].style.background = '#f97316';
     }
 
     setInterval(() => goHero((heroIndex + 1) % heroSlides.length), 5000);

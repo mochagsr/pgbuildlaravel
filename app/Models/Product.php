@@ -18,10 +18,20 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('urutan');
+    }
+
     public function getCoverUrlAttribute(): string
     {
-        if ($this->cover_image && file_exists(public_path('storage/' . $this->cover_image))) {
-            return asset('storage/' . $this->cover_image);
+        if ($this->cover_image) {
+            if (file_exists(public_path('storage/' . $this->cover_image))) {
+                return asset('storage/' . $this->cover_image);
+            }
+            if (file_exists(public_path('images/produk/' . $this->cover_image))) {
+                return asset('images/produk/' . $this->cover_image);
+            }
         }
         return asset('images/produk/0-blank_photo.jpg');
     }

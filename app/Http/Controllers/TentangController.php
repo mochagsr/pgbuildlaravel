@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\AboutImage;
+use App\Models\AboutSetting;
 
 class TentangController extends Controller
 {
     public function index()
     {
-        return view('tentang');
+        $setting = AboutSetting::getSetting();
+        $images  = AboutImage::orderBy('urutan')->get();
+        return view('tentang', compact('setting', 'images'));
     }
 }

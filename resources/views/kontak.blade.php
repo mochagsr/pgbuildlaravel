@@ -101,7 +101,7 @@
             <div class="w-16 h-1 bg-orange-500 mb-8"></div>
             <div class="rounded-xl overflow-hidden shadow-lg">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.0!2d112.6!3d-7.98!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNyXCsDU4JzQ4LjAiUyAxMTLCsDM2JzAwLjAiRQ!5e0!3m2!1sid!2sid!4v1234567890"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126.5!2d112.6147786!3d-7.9915926!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7882a66d0d5e99%3A0xebc98708fb44bdf7!2sCV.+PUSTAKA+GRAFIKA!5e0!3m2!1sid!2sid!4v1748000000000"
                     width="100%" height="380" style="border:0;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade">
                 </iframe>

@@ -7,7 +7,9 @@ use App\Http\Controllers\KontakController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\Admin\ProdukImageController;
 use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Admin\TentangController as AdminTentangController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -34,6 +36,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/produk/{produk}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
         Route::put('/produk/{produk}', [ProdukController::class, 'update'])->name('produk.update');
         Route::delete('/produk/{produk}', [ProdukController::class, 'destroy'])->name('produk.destroy');
+        Route::post('/produk/{produk}/images', [ProdukImageController::class, 'store'])->name('produk.images.store');
+        Route::delete('/produk-images/{image}', [ProdukImageController::class, 'destroy'])->name('produk.images.destroy');
+
+        // Tentang (halaman About)
+        Route::get('/tentang', [AdminTentangController::class, 'edit'])->name('tentang.edit');
+        Route::post('/tentang', [AdminTentangController::class, 'update'])->name('tentang.update');
+        Route::post('/tentang/images', [AdminTentangController::class, 'storeImage'])->name('tentang.images.store');
+        Route::delete('/tentang/images/{image}', [AdminTentangController::class, 'destroyImage'])->name('tentang.images.destroy');
+        Route::post('/tentang/images/import-static', [AdminTentangController::class, 'importStaticImages'])->name('tentang.images.import');
 
         // Kategori
         Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin') - Pustaka Grafika</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" href="{{ asset('images/logo/logopg.png') }}" type="image/png">
@@ -37,6 +38,13 @@
                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
                               {{ request()->routeIs('admin.produk.*') ? 'bg-blue-800 text-white' : 'text-blue-200 hover:bg-blue-800 hover:text-white' }}">
                         <i class="fas fa-book w-4"></i> Kelola Produk
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.tentang.edit') }}"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
+                              {{ request()->routeIs('admin.tentang.*') ? 'bg-blue-800 text-white' : 'text-blue-200 hover:bg-blue-800 hover:text-white' }}">
+                        <i class="fas fa-info-circle w-4"></i> Halaman Tentang
                     </a>
                 </li>
                 <li>
@@ -113,5 +121,6 @@
     </div>
 </div>
 
+@stack('scripts')
 </body>
 </html>

@@ -29,7 +29,11 @@ class KategoriController extends Controller
         ]);
 
         $data['slug'] = Str::slug($data['name']);
-        $data['urutan'] = $data['urutan'] ?? 0;
+        $data['urutan'] = (int) ($data['urutan'] ?? 0);
+
+        if ($data['urutan'] > 0) {
+            Category::where('urutan', '>=', $data['urutan'])->increment('urutan');
+        }
 
         Category::create($data);
 
@@ -50,7 +54,13 @@ class KategoriController extends Controller
         ]);
 
         $data['slug'] = Str::slug($data['name']);
-        $data['urutan'] = $data['urutan'] ?? 0;
+        $data['urutan'] = (int) ($data['urutan'] ?? 0);
+
+        if ($data['urutan'] > 0 && $data['urutan'] !== $kategori->urutan) {
+            Category::where('id', '!=', $kategori->id)
+                ->where('urutan', '>=', $data['urutan'])
+                ->increment('urutan');
+        }
 
         $kategori->update($data);
 

@@ -1,58 +1,342 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CV. Pustaka Grafika — Website Company Profile
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website company profile dan katalog buku berbasis Laravel 13 untuk CV. Pustaka Grafika, Malang.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Backend**: Laravel 13 (PHP 8.3)
+- **Frontend**: Tailwind CSS v4, Vite
+- **Database**: MySQL
+- **Storage**: Laravel Storage (public disk)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Fitur
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Halaman profil perusahaan (Home, Tentang, Kontak)
+- Katalog buku dengan filter kategori & jenjang
+- Halaman detail produk dengan carousel gambar & lightbox
+- Admin panel (CRUD produk, kategori, galeri gambar)
+- Upload cover & galeri per produk
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Development Lokal
 
-## Agentic Development
+### Requirement
+- PHP 8.2+
+- Composer
+- Node.js 18+
+- MySQL
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### Setup
 ```bash
-composer require laravel/boost --dev
+git clone https://github.com/mochagsr/pgbuildlaravel.git
+cd pgbuildlaravel
 
-php artisan boost:install
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Edit `.env`:
+```
+DB_DATABASE=pgbuildlaravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Contributing
+```bash
+php artisan migrate
+php artisan storage:link
+npm run dev
+php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Akses di `http://localhost:8000`
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Deployment ke Produksi
 
-## Security Vulnerabilities
+### Infrastruktur
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Komponen | Layanan |
+|---|---|
+| VPS | AWS Lightsail |
+| Control Panel | aaPanel |
+| Domain | Domanesia |
+| DNS / CDN | Cloudflare |
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Buat VPS di AWS Lightsail
+
+1. Login ke [AWS Lightsail](https://lightsail.aws.amazon.com)
+2. **Create instance** → pilih **Linux/Unix** → **OS Only** → **Ubuntu 22.04 LTS**
+3. Pilih plan minimal **$10/bulan** (2 GB RAM) untuk Laravel
+4. Beri nama instance, klik **Create**
+5. Setelah running, buka tab **Networking** → tambahkan firewall rule:
+   - Port **80** (HTTP)
+   - Port **443** (HTTPS)
+   - Port **8888** (aaPanel, bisa dihapus setelah setup selesai)
+6. Buat **Static IP** dan attach ke instance — catat IP-nya
+
+---
+
+### 2. Install aaPanel
+
+SSH ke server:
+```bash
+ssh ubuntu@<IP-LIGHTSAIL> -i <your-key.pem>
+```
+
+Install aaPanel:
+```bash
+wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh
+sudo bash install.sh
+```
+
+Catat **URL, username, dan password** aaPanel yang muncul setelah instalasi selesai.
+
+---
+
+### 3. Setup Stack di aaPanel
+
+Setelah login ke aaPanel:
+
+1. **App Store** → install:
+   - **Nginx** (versi terbaru)
+   - **MySQL 8.0**
+   - **PHP 8.3**
+2. Setelah PHP terinstall, masuk ke **PHP 8.3 → Extensions** → install ekstensi:
+   `fileinfo`, `openssl`, `pdo_mysql`, `mbstring`, `tokenizer`, `xml`, `ctype`, `bcmath`, `gd`, `zip`
+3. Opsional: install **phpMyAdmin** untuk manajemen database via browser
+
+---
+
+### 4. Buat Database
+
+Di aaPanel → **Database** → **Add Database**:
+- DB Name: `pgbuildlaravel`
+- Username: buat user baru (jangan pakai root)
+- Password: gunakan password yang kuat
+- Catat semua credentials ini
+
+---
+
+### 5. Setup DNS di Cloudflare
+
+1. Login ke [Cloudflare](https://cloudflare.com) → **Add a Site** → masukkan domain dari Domanesia
+2. Pilih plan **Free** → lanjutkan
+3. **Di Domanesia** → masuk ke pengaturan domain → ubah **Nameserver** ke nameserver Cloudflare yang diberikan (contoh: `aria.ns.cloudflare.com`, `leo.ns.cloudflare.com`)
+4. Tunggu hingga nameserver aktif (5–30 menit)
+5. Di Cloudflare → **DNS** → tambah record berikut:
+
+| Type | Name | Content | Proxy Status |
+|---|---|---|---|
+| A | `@` | `<IP-LIGHTSAIL>` | Proxied (oranye) |
+| A | `www` | `<IP-LIGHTSAIL>` | Proxied (oranye) |
+
+---
+
+### 6. Buat Website di aaPanel
+
+1. **Website** → **Add Site**
+2. Domain: `namadomain.com` (sesuaikan)
+3. PHP Version: **8.3**
+4. Database: pilih database yang sudah dibuat
+5. Root path: `/www/wwwroot/namadomain.com`
+
+---
+
+### 7. Deploy Kode ke Server
+
+**Opsi A — via Git (direkomendasikan):**
+```bash
+cd /www/wwwroot
+sudo rm -rf namadomain.com
+git clone https://github.com/mochagsr/pgbuildlaravel.git namadomain.com
+cd namadomain.com
+```
+
+**Opsi B — via aaPanel File Manager:**
+- Zip seluruh folder project di lokal
+- Upload via aaPanel → File Manager → ekstrak di folder site
+
+---
+
+### 8. Konfigurasi Aplikasi
+
+```bash
+cd /www/wwwroot/namadomain.com
+
+# Install PHP dependencies
+composer install --no-dev --optimize-autoloader
+
+# Install & build frontend
+npm install
+npm run build
+
+# Buat file .env
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit `.env` untuk produksi:
+```env
+APP_NAME="Pustaka Grafika"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://namadomain.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pgbuildlaravel
+DB_USERNAME=<db-user>
+DB_PASSWORD=<db-password>
+
+FILESYSTEM_DISK=public
+SESSION_DRIVER=file
+CACHE_STORE=file
+LOG_CHANNEL=stack
+```
+
+```bash
+# Jalankan migrasi database
+php artisan migrate --force
+
+# Buat symlink untuk storage gambar
+php artisan storage:link
+
+# Optimasi cache untuk produksi
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Set permission folder
+chmod -R 755 storage bootstrap/cache
+chown -R www:www storage bootstrap/cache
+```
+
+---
+
+### 9. Konfigurasi Nginx
+
+Di aaPanel → **Website** → klik nama site → **Config** → ganti isi konfigurasi Nginx:
+
+```nginx
+server {
+    listen 80;
+    server_name namadomain.com www.namadomain.com;
+    root /www/wwwroot/namadomain.com/public;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/tmp/php-cgi-83.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+
+    client_max_body_size 20M;
+}
+```
+
+> **Penting**: `root` harus mengarah ke folder `/public`, bukan root project.
+
+---
+
+### 10. Pasang SSL (HTTPS)
+
+1. aaPanel → **Website** → klik nama site → **SSL**
+2. Pilih tab **Let's Encrypt**
+3. Centang domain dan www → klik **Apply**
+4. Setelah berhasil, aktifkan **Force HTTPS**
+
+Di Cloudflare → **SSL/TLS** → ubah enkripsi mode ke **Full (strict)**.
+
+---
+
+### 11. Buat Akun Admin Pertama
+
+```bash
+cd /www/wwwroot/namadomain.com
+php artisan tinker
+```
+
+```php
+App\Models\User::create([
+    'name'     => 'Admin',
+    'email'    => 'admin@namadomain.com',
+    'password' => bcrypt('password-anda-yang-kuat'),
+]);
+exit
+```
+
+Login di: `https://namadomain.com/admin/login`
+
+---
+
+### 12. Upload Gambar Produk Lama (Jika Ada)
+
+Jika ada gambar di `public/images/produk/` di lokal, upload ke server:
+
+```bash
+# Dari komputer lokal:
+scp -r -i <key.pem> public/images ubuntu@<IP>:/www/wwwroot/namadomain.com/public/
+```
+
+Atau upload manual via aaPanel File Manager.
+
+---
+
+## Update Kode (Deployment Ulang)
+
+```bash
+cd /www/wwwroot/namadomain.com
+git pull origin master
+composer install --no-dev --optimize-autoloader
+npm run build
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+---
+
+## Troubleshooting
+
+| Masalah | Solusi |
+|---|---|
+| Halaman 500 Error | Set `APP_DEBUG=true` sementara, cek `storage/logs/laravel.log` |
+| Gambar tidak muncul | Jalankan `php artisan storage:link` |
+| Upload gambar gagal | `chmod -R 775 storage` dan `chown -R www:www storage` |
+| CSS / JS tidak load | Jalankan `npm run build` ulang |
+| 404 pada semua route | Pastikan konfigurasi Nginx sudah benar (`try_files`) |
+| DB connection error | Cek credentials di `.env`, pastikan MySQL berjalan |
+| CSRF / 419 error | Pastikan `APP_URL` sesuai dengan domain yang diakses |
+
+---
+
+## Informasi Proyek
+
+**CV. Pustaka Grafika**
+Penerbit & Percetakan Buku, Malang
+
+WhatsApp: [0811-371-171](https://wa.me/62811371171)
+GitHub: [github.com/mochagsr/pgbuildlaravel](https://github.com/mochagsr/pgbuildlaravel)
