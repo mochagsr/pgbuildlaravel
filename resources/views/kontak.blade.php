@@ -77,7 +77,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-gray-800 mb-1">Jam Operasional</h4>
-                        <p class="text-gray-600 text-sm">Senin – Jumat: 08.00 – 17.00 WIB<br>Sabtu: 08.00 – 13.00 WIB</p>
+                        <p class="text-gray-600 text-sm">Senin – Sabtu: 08.00 – 16.00 WIB<br>Minggu & Tanggal Merah: Libur</p>
                     </div>
                 </div>
             </div>
