@@ -29,7 +29,7 @@
             <div class="text-gray-700 leading-relaxed space-y-4 text-justify">
                 @php
                     $defaultContent = "Sebuah usaha berbentuk perseroan komanditer yang dimotori sekelompok tenaga profesional muda. Didirikan tahun 2007 dengan komitmen memberikan layanan pengadaan barang dan jasa di bidang pendidikan pada instansi pemerintah maupun swasta.\n\nKami mengkhususkan diri sebagai produsen percetakan offset dan penyedia buku (alat peraga pendidikan) yang telah eksis bertahun-tahun memberikan pelayanan dalam meningkatkan mutu proses belajar mengajar. Dalam hal ini pengadaan buku-buku pelajaran atau bahan ajar, mulai jenjang pendidikan Sekolah Dasar, Sekolah Lanjutan Menengah Pertama, Sekolah Menengah Atas ataupun Kejuruan.\n\nKami telah membantu beberapa instansi dan sekolah dari tingkat sekolah dasar sampai sekolah menengah atas dalam percetakan dan merealisasikan pengadaannya. Kami berpengalaman di dunia percetakan dan pengadaan penunjang pembelajaran.\n\nDengan semangat \"Mitra Mencerdaskan Anak Bangsa\", kami PUSTAKA GRAFIKA selalu mengutamakan mutu dan kualitas, selalu update dan pioneer dalam percetakan untuk memberikan kemudahan dan kenyamanan para pengguna jasa.";
-                    $paragraphs = array_filter(explode("\n\n", $setting->content ?? $defaultContent));
+                    $paragraphs = array_filter(explode("\n\n", str_replace("\r\n", "\n", $setting->content ?? $defaultContent)));
                 @endphp
                 @foreach($paragraphs as $para)
                 <p>{{ $para }}</p>

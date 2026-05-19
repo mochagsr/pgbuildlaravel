@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $totalProduk = Product::count();
         $totalAktif = Product::where('is_active', true)->count();
         $totalKategori = Category::count();
-        $produkTerbaru = Product::latest()->limit(5)->get();
+        $produkTerbaru = Product::orderByDesc('id')->limit(5)->get();
 
         return view('admin.dashboard', compact('totalProduk', 'totalAktif', 'totalKategori', 'produkTerbaru'));
     }

@@ -131,26 +131,76 @@ Di aaPanel → **Database** → **Add Database**:
 
 ### 5. Setup DNS di Cloudflare
 
-1. Login ke [Cloudflare](https://cloudflare.com) → **Add a Site** → masukkan domain dari Domanesia
-2. Pilih plan **Free** → lanjutkan
-3. **Di Domanesia** → masuk ke pengaturan domain → ubah **Nameserver** ke nameserver Cloudflare yang diberikan (contoh: `aria.ns.cloudflare.com`, `leo.ns.cloudflare.com`)
-4. Tunggu hingga nameserver aktif (5–30 menit)
-5. Di Cloudflare → **DNS** → tambah record berikut:
+#### A. Tambahkan Domain ke Cloudflare
+
+1. Login ke [cloudflare.com](https://cloudflare.com) → klik **Add a Site**
+2. Ketik `pustakagrafika.com` → klik **Continue**
+3. Pilih plan **Free** → klik **Continue**
+4. Cloudflare akan scan DNS lama — abaikan hasilnya, klik **Continue**
+
+#### B. Ganti Nameserver di Domanesia
+
+Cloudflare akan menampilkan **2 nameserver** miliknya, contoh:
+```
+aria.ns.cloudflare.com
+leo.ns.cloudflare.com
+```
+> Nameserver Anda mungkin berbeda — gunakan yang tertera di halaman Cloudflare, bukan contoh di atas.
+
+Langkah di Domanesia:
+1. Login ke panel Domanesia → **Domain** → klik `pustakagrafika.com`
+2. Pilih menu **Nameserver** atau **Ubah Nameserver**
+3. Hapus nameserver lama, isi dengan 2 nameserver dari Cloudflare di atas
+4. Simpan — proses propagasi biasanya **5–30 menit**, maksimal 24 jam
+5. Kembali ke Cloudflare → klik **Done, check nameservers**
+6. Tunggu hingga status berubah menjadi **Active** (halaman akan auto-refresh atau kirim email)
+
+#### C. Tambah DNS Record di Cloudflare
+
+Setelah status **Active**, masuk ke menu **DNS → Records** → klik **Add record**:
+
+**Record pertama (domain utama):**
+- Type: `A`
+- Name: `@`
+- IPv4 address: `<IP-LIGHTSAIL>` ← isi IP Static dari Lightsail
+- Proxy status: **Proxied** (ikon awan oranye — aktifkan)
+- Klik **Save**
+
+**Record kedua (www):**
+- Type: `A`
+- Name: `www`
+- IPv4 address: `<IP-LIGHTSAIL>` ← sama seperti di atas
+- Proxy status: **Proxied** (ikon awan oranye — aktifkan)
+- Klik **Save**
+
+Hasilnya di tabel DNS:
 
 | Type | Name | Content | Proxy Status |
 |---|---|---|---|
 | A | `@` | `<IP-LIGHTSAIL>` | Proxied (oranye) |
 | A | `www` | `<IP-LIGHTSAIL>` | Proxied (oranye) |
 
+> **Proxied (oranye)** artinya traffic lewat Cloudflare — aktifkan agar dapat proteksi dan CDN gratis. Jika ikon awannya abu-abu (DNS only), klik ikon tersebut untuk mengaktifkan.
+
+#### D. Setting SSL/TLS di Cloudflare
+
+Sebelum lanjut ke langkah berikutnya, atur dulu enkripsi di Cloudflare:
+
+1. Masuk ke **SSL/TLS** (menu kiri)
+2. Klik tab **Overview**
+3. Ubah mode enkripsi ke **Full (strict)**
+
+> Jangan pilih "Flexible" — ini akan menyebabkan redirect loop setelah SSL dipasang di server.
+
 ---
 
 ### 6. Buat Website di aaPanel
 
 1. **Website** → **Add Site**
-2. Domain: `namadomain.com` (sesuaikan)
+2. Domain: `pustakagrafika.com` (sesuaikan)
 3. PHP Version: **8.3**
 4. Database: pilih database yang sudah dibuat
-5. Root path: `/www/wwwroot/namadomain.com`
+5. Root path: `/www/wwwroot/pustakagrafika.com`
 
 ---
 
@@ -159,9 +209,9 @@ Di aaPanel → **Database** → **Add Database**:
 **Opsi A — via Git (direkomendasikan):**
 ```bash
 cd /www/wwwroot
-sudo rm -rf namadomain.com
-git clone https://github.com/mochagsr/pgbuildlaravel.git namadomain.com
-cd namadomain.com
+sudo rm -rf pustakagrafika.com
+git clone https://github.com/mochagsr/pgbuildlaravel.git pustakagrafika.com
+cd pustakagrafika.com
 ```
 
 **Opsi B — via aaPanel File Manager:**
@@ -173,7 +223,7 @@ cd namadomain.com
 ### 8. Konfigurasi Aplikasi
 
 ```bash
-cd /www/wwwroot/namadomain.com
+cd /www/wwwroot/pustakagrafika.com
 
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader
@@ -192,7 +242,7 @@ Edit `.env` untuk produksi:
 APP_NAME="Pustaka Grafika"
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://namadomain.com
+APP_URL=https://pustakagrafika.com
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -233,8 +283,8 @@ Di aaPanel → **Website** → klik nama site → **Config** → ganti isi konfi
 ```nginx
 server {
     listen 80;
-    server_name namadomain.com www.namadomain.com;
-    root /www/wwwroot/namadomain.com/public;
+    server_name pustakagrafika.com www.pustakagrafika.com;
+    root /www/wwwroot/pustakagrafika.com/public;
     index index.php index.html;
 
     location / {
@@ -274,20 +324,20 @@ Di Cloudflare → **SSL/TLS** → ubah enkripsi mode ke **Full (strict)**.
 ### 11. Buat Akun Admin Pertama
 
 ```bash
-cd /www/wwwroot/namadomain.com
+cd /www/wwwroot/pustakagrafika.com
 php artisan tinker
 ```
 
 ```php
 App\Models\User::create([
     'name'     => 'Admin',
-    'email'    => 'admin@namadomain.com',
+    'email'    => 'admin@pustakagrafika.com',
     'password' => bcrypt('password-anda-yang-kuat'),
 ]);
 exit
 ```
 
-Login di: `https://namadomain.com/admin/login`
+Login di: `https://pustakagrafika.com/admin/login`
 
 ---
 
@@ -297,7 +347,7 @@ Jika ada gambar di `public/images/produk/` di lokal, upload ke server:
 
 ```bash
 # Dari komputer lokal:
-scp -r -i <key.pem> public/images ubuntu@<IP>:/www/wwwroot/namadomain.com/public/
+scp -r -i <key.pem> public/images ubuntu@<IP>:/www/wwwroot/pustakagrafika.com/public/
 ```
 
 Atau upload manual via aaPanel File Manager.
@@ -307,7 +357,7 @@ Atau upload manual via aaPanel File Manager.
 ## Update Kode (Deployment Ulang)
 
 ```bash
-cd /www/wwwroot/namadomain.com
+cd /www/wwwroot/pustakagrafika.com
 git pull origin master
 composer install --no-dev --optimize-autoloader
 npm run build
