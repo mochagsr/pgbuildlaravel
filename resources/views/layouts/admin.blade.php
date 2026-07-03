@@ -54,6 +54,13 @@
                         <i class="fas fa-tags w-4"></i> Kelola Kategori
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.jenjang.index') }}"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
+                              {{ request()->routeIs('admin.jenjang.*') ? 'bg-blue-800 text-white' : 'text-blue-200 hover:bg-blue-800 hover:text-white' }}">
+                        <i class="fas fa-layer-group w-4"></i> Kelola Jenjang
+                    </a>
+                </li>
             </ul>
 
             <div class="text-xs text-blue-400 uppercase tracking-wide mb-3 px-2 mt-6">Website</div>

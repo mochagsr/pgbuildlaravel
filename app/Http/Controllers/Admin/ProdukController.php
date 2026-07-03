@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Jenjang;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
@@ -31,7 +32,8 @@ class ProdukController extends Controller
     public function create()
     {
         $categories = Category::orderBy('urutan')->get();
-        return view('admin.produk.form', ['product' => new Product(), 'categories' => $categories]);
+        $jenjangs   = Jenjang::orderBy('urutan')->orderBy('nama')->get();
+        return view('admin.produk.form', ['product' => new Product(), 'categories' => $categories, 'jenjangs' => $jenjangs]);
     }
 
     public function store(Request $request)
@@ -80,8 +82,9 @@ class ProdukController extends Controller
     public function edit(Product $produk)
     {
         $categories = Category::orderBy('urutan')->get();
+        $jenjangs   = Jenjang::orderBy('urutan')->orderBy('nama')->get();
         $produk->load('images');
-        return view('admin.produk.form', ['product' => $produk, 'categories' => $categories]);
+        return view('admin.produk.form', ['product' => $produk, 'categories' => $categories, 'jenjangs' => $jenjangs]);
     }
 
     public function update(Request $request, Product $produk)

@@ -91,10 +91,15 @@
                 <label class="form-label">Jenjang</label>
                 <select form="main-form" name="jenjang" class="form-input">
                     <option value="">-- Pilih --</option>
-                    @foreach(['SD', 'SMP', 'SMA', 'SMK', 'Umum'] as $j)
-                    <option value="{{ $j }}" {{ old('jenjang', $product->jenjang) === $j ? 'selected' : '' }}>{{ $j }}</option>
+                    @foreach($jenjangs as $j)
+                    <option value="{{ $j->nama }}" {{ old('jenjang', $product->jenjang) === $j->nama ? 'selected' : '' }}>{{ $j->nama }}</option>
                     @endforeach
+                    {{-- Jaga nilai lama yang belum terdaftar di menu Kelola Jenjang agar tetap tampil --}}
+                    @if($product->jenjang && !$jenjangs->contains('nama', $product->jenjang))
+                    <option value="{{ $product->jenjang }}" selected>{{ $product->jenjang }} (belum terdaftar)</option>
+                    @endif
                 </select>
+                <p style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Pilihan diatur di menu <strong>Kelola Jenjang</strong>.</p>
             </div>
         </div>
 

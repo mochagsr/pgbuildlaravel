@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\ProdukImageController;
 use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Admin\JenjangController;
 use App\Http\Controllers\Admin\TentangController as AdminTentangController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,5 +54,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/kategori/{kategori}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
         Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
         Route::delete('/kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
+        // Jenjang
+        Route::get('/jenjang', [JenjangController::class, 'index'])->name('jenjang.index');
+        Route::get('/jenjang/create', [JenjangController::class, 'create'])->name('jenjang.create');
+        Route::post('/jenjang', [JenjangController::class, 'store'])->name('jenjang.store');
+        Route::get('/jenjang/{jenjang}/edit', [JenjangController::class, 'edit'])->name('jenjang.edit');
+        Route::put('/jenjang/{jenjang}', [JenjangController::class, 'update'])->name('jenjang.update');
+        Route::delete('/jenjang/{jenjang}', [JenjangController::class, 'destroy'])->name('jenjang.destroy');
     });
 });
