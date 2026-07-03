@@ -156,7 +156,7 @@
                     <label class="form-label">Urutan Tampil</label>
                     <input form="main-form" type="number" name="urutan" value="{{ old('urutan', $product->urutan ?? 0) }}" min="0"
                            class="form-input" placeholder="0">
-                    <p style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Angka kecil tampil lebih dulu</p>
+                    <p style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Untuk urutan di katalog publik. Angka kecil tampil lebih dulu &mdash; default 0 (paling awal). Isi 1 agar tampil paling depan.</p>
                 </div>
                 <div>
                     <label class="relative inline-flex items-center cursor-pointer">

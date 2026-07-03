@@ -22,7 +22,7 @@ class ProdukController extends Controller
             $query->where('category_id', $request->kategori);
         }
 
-        $products = $query->orderBy('urutan')->orderBy('judul')->paginate(15)->withQueryString();
+        $products = $query->orderByDesc('id')->paginate(15)->withQueryString();
         $categories = Category::orderBy('name')->get();
 
         return view('admin.produk.index', compact('products', 'categories'));
