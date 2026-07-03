@@ -207,11 +207,15 @@ Sebelum lanjut ke langkah berikutnya, atur dulu enkripsi di Cloudflare:
 ### 7. Deploy Kode ke Server
 
 **Opsi A — via Git (direkomendasikan):**
+
+> aaPanel sudah membuat folder `pustakagrafika.com` saat Add Site — jangan dihapus, langsung init git di dalamnya:
+
 ```bash
-cd /www/wwwroot
-sudo rm -rf pustakagrafika.com
-git clone https://github.com/mochagsr/pgbuildlaravel.git pustakagrafika.com
-cd pustakagrafika.com
+cd /www/wwwroot/pustakagrafika.com
+git init
+git remote add origin https://github.com/mochagsr/pgbuildlaravel.git
+git fetch origin
+git checkout -f master
 ```
 
 **Opsi B — via aaPanel File Manager:**
