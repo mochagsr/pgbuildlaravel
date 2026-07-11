@@ -100,13 +100,11 @@ class ProdukController extends Controller
             'deskripsi'      => 'nullable|string',
             'is_active'      => 'nullable|boolean',
             'urutan'         => 'nullable|integer',
-            'cover_images'   => 'nullable|array',
-            'cover_images.*' => 'image|max:5120',
+            'cover_image'    => 'nullable|image|max:5120',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
         $data['urutan']    = (int) ($data['urutan'] ?? 0);
-        unset($data['cover_images']);
 
         if ($data['urutan'] > 0 && $data['urutan'] !== $produk->urutan) {
             Product::where('id', '!=', $produk->id)
@@ -114,23 +112,14 @@ class ProdukController extends Controller
                 ->increment('urutan');
         }
 
-        $files = $request->file('cover_images', []);
-
-        // Gambar pertama jadi cover utama (ganti cover lama)
-        if (!empty($files)) {
-            $data['cover_image'] = $files[0]->store('produk', 'public');
+        // Ganti cover hanya jika ada file baru diupload; kosong = cover lama dipertahankan
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('produk', 'public');
+        } else {
+            unset($data['cover_image']);
         }
 
         $produk->update($data);
-
-        // Gambar ke-2 dst masuk ke galeri
-        $urutan = $produk->images()->max('urutan') + 1;
-        foreach (array_slice($files, 1) as $file) {
-            $produk->images()->create([
-                'image_path' => $file->store('produk-gallery', 'public'),
-                'urutan'     => $urutan++,
-            ]);
-        }
 
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui.');
     }
