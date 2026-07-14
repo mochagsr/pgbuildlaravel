@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         $featuredProducts = Product::where('is_active', true)
-            ->orderBy('urutan')
+            ->latest()
             ->limit(8)
             ->get();
 
