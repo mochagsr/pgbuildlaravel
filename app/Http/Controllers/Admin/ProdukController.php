@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Jenjang;
 use App\Models\Product;
-use App\Models\ProductImage;
 use Illuminate\Http\Request;
 
 class ProdukController extends Controller
@@ -48,19 +47,13 @@ class ProdukController extends Controller
             'tahun'            => 'nullable|integer|min:2000|max:2100',
             'deskripsi'        => 'nullable|string',
             'is_active'        => 'nullable|boolean',
-            'urutan'           => 'nullable|integer',
             'cover_image'      => 'nullable|image|max:5120',
             'gallery_images'   => 'nullable|array',
             'gallery_images.*' => 'image|max:5120',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
-        $data['urutan']    = (int) ($data['urutan'] ?? 0);
         unset($data['gallery_images']);
-
-        if ($data['urutan'] > 0) {
-            Product::where('urutan', '>=', $data['urutan'])->increment('urutan');
-        }
 
         if ($request->hasFile('cover_image')) {
             $data['cover_image'] = $request->file('cover_image')->store('produk', 'public');
@@ -99,18 +92,10 @@ class ProdukController extends Controller
             'tahun'          => 'nullable|integer|min:2000|max:2100',
             'deskripsi'      => 'nullable|string',
             'is_active'      => 'nullable|boolean',
-            'urutan'         => 'nullable|integer',
             'cover_image'    => 'nullable|image|max:5120',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
-        $data['urutan']    = (int) ($data['urutan'] ?? 0);
-
-        if ($data['urutan'] > 0 && $data['urutan'] !== $produk->urutan) {
-            Product::where('id', '!=', $produk->id)
-                ->where('urutan', '>=', $data['urutan'])
-                ->increment('urutan');
-        }
 
         // Ganti cover hanya jika ada file baru diupload; kosong = cover lama dipertahankan
         if ($request->hasFile('cover_image')) {
