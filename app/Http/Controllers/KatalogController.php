@@ -26,12 +26,8 @@ class KatalogController extends Controller
             $query->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        // Produk dengan urutan manual (>0) tampil dulu; sisanya urut terbaru di atas
-        $products = $query->orderByRaw('CASE WHEN urutan > 0 THEN 0 ELSE 1 END')
-            ->orderBy('urutan')
-            ->orderByDesc('id')
-            ->paginate(12)
-            ->withQueryString();
+        // Selalu tampilkan produk terbaru di atas, sama seperti daftar admin
+        $products = $query->orderByDesc('id')->paginate(12)->withQueryString();
 
         return view('katalog.index', compact('products', 'categories'));
     }
