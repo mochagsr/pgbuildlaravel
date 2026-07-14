@@ -18,11 +18,6 @@ class HomeController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        $produkLainnya = Product::where('is_active', true)
-            ->latest()
-            ->limit(5)
-            ->get();
-
-        return view('home', compact('featuredProducts', 'categories', 'produkLainnya'));
+        return view('home', compact('featuredProducts', 'categories'));
     }
 }

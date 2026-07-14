@@ -177,29 +177,6 @@
     </div>
 </section>
 
-{{-- Produk Lain (other products) --}}
-<section class="py-14 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl font-bold text-blue-900 mb-2">Produk Lainnya</h2>
-            <div class="w-16 h-1 bg-orange-500 mx-auto mb-4"></div>
-            <p class="text-gray-500 text-sm">Selain buku pelajaran, kami juga menyediakan berbagai produk percetakan</p>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            @foreach($produkLainnya as $item)
-            <a href="{{ route('katalog.show', $item->id) }}"
-               class="bg-white rounded-xl shadow overflow-hidden hover:shadow-md transition hover:-translate-y-1 group">
-                <div class="aspect-[3/4] bg-gray-100 overflow-hidden">
-                    <img src="{{ $item->cover_url }}" alt="{{ $item->judul }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                </div>
-                <div class="p-3 text-center text-sm font-semibold text-gray-700 line-clamp-2">{{ $item->judul }}</div>
-            </a>
-            @endforeach
-        </div>
-    </div>
-</section>
-
 {{-- CTA --}}
 <section class="py-12 bg-orange-500">
     <div class="max-w-7xl mx-auto px-4 text-center text-white">
