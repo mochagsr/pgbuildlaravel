@@ -11,6 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Percaya proxy Cloudflare Tunnel: origin (Proxmox) berjalan HTTP di balik
+        // tunnel HTTPS, jadi Laravel harus baca X-Forwarded-Proto agar tahu request
+        // sebenarnya HTTPS dan menghasilkan URL https (hindari mixed content).
+        $middleware->trustProxies(at: '*');
+
         $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
             return $request->is('admin*') ? route('admin.login') : route('home');
         });
