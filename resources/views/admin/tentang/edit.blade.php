@@ -131,18 +131,18 @@ Dengan semangat \"Mitra Mencerdaskan Anak Bangsa\", kami PUSTAKA GRAFIKA selalu 
             @endif
         @endif
 
-        {{-- Upload via fetch --}}
+        {{-- Upload galeri — submit ke form terpisah via atribut form= (hindari nested form & fetch) --}}
         <div>
             <label class="form-label">Tambah Gambar</label>
             <div style="display:flex;gap:.5rem;align-items:center;">
-                <input type="file" id="gallery-files" multiple accept="image/*"
+                <input form="tentang-gallery-form" type="file" name="images[]" multiple accept="image/*" required
                        class="form-input" style="flex:1;min-width:0;">
-                <button type="button" onclick="uploadGallery()" id="gallery-btn"
+                <button form="tentang-gallery-form" type="submit"
                         style="flex-shrink:0;background:#1e3a5f;color:#fff;border:none;padding:.45rem .85rem;border-radius:.5rem;font-size:.8rem;cursor:pointer;">
                     <i class="fas fa-upload"></i> Upload
                 </button>
             </div>
-            <p id="gallery-msg" style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Bisa pilih lebih dari 1. Maks 5MB.</p>
+            <p style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Bisa pilih lebih dari 1. Maks 5MB per gambar.</p>
         </div>
     </div>
 
@@ -159,6 +159,12 @@ Dengan semangat \"Mitra Mencerdaskan Anak Bangsa\", kami PUSTAKA GRAFIKA selalu 
     </a>
 </div>
 
+</form>
+
+{{-- Form terpisah untuk upload galeri (URL relatif agar aman dari mixed content) --}}
+<form id="tentang-gallery-form" method="POST"
+      action="{{ route('admin.tentang.images.store', [], false) }}" enctype="multipart/form-data">
+    @csrf
 </form>
 
 @push('scripts')
@@ -220,47 +226,6 @@ async function importStatic() {
     }
 }
 
-async function uploadGallery() {
-    const input = document.getElementById('gallery-files');
-    const btn   = document.getElementById('gallery-btn');
-    const msg   = document.getElementById('gallery-msg');
-
-    if (!input.files.length) {
-        msg.textContent = 'Pilih gambar terlebih dahulu.';
-        msg.style.color = '#ef4444';
-        return;
-    }
-
-    const fd = new FormData();
-    Array.from(input.files).forEach(f => fd.append('images[]', f));
-    fd.append('_token', '{{ csrf_token() }}');
-
-    btn.disabled = true;
-    btn.textContent = 'Mengupload...';
-    msg.style.color = '#9ca3af';
-    msg.textContent = 'Sedang mengupload...';
-
-    try {
-        const res = await fetch('{{ route('admin.tentang.images.store') }}', {
-            method: 'POST', body: fd,
-        });
-        if (res.ok || res.redirected) {
-            msg.style.color = '#16a34a';
-            msg.textContent = 'Berhasil! Memuat ulang...';
-            setTimeout(() => window.location.reload(), 800);
-        } else {
-            msg.style.color = '#ef4444';
-            msg.textContent = 'Gagal upload. Status: ' + res.status;
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-upload"></i> Upload';
-        }
-    } catch (err) {
-        msg.style.color = '#ef4444';
-        msg.textContent = 'Error: ' + err.message;
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-upload"></i> Upload';
-    }
-}
 </script>
 @endpush
 
