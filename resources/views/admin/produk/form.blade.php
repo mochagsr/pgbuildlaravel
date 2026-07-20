@@ -194,67 +194,22 @@
                 <p style="font-size:.75rem;color:#9ca3af;margin-bottom:.75rem;">Belum ada gambar galeri.</p>
                 @endif
 
-                {{-- Upload galeri via fetch (hindari masalah HTML nested form) --}}
-                <div>
+                {{-- Upload galeri — form tersendiri (tidak nested), submit normal.
+                     Action pakai URL relatif (absolute:false) agar aman dari mixed content HTTP/HTTPS. --}}
+                <form method="POST" action="{{ route('admin.produk.images.store', $product, false) }}"
+                      enctype="multipart/form-data">
+                    @csrf
                     <label class="form-label">Tambah Gambar</label>
                     <div style="display:flex;gap:0.5rem;align-items:center;">
-                        <input type="file" id="gallery-files" multiple accept="image/*"
+                        <input type="file" name="images[]" multiple accept="image/*" required
                                class="form-input" style="flex:1;min-width:0;">
-                        <button type="button" onclick="uploadGallery()"
-                                id="gallery-btn"
+                        <button type="submit"
                                 style="flex-shrink:0;background:#1e3a5f;color:#fff;border:none;padding:.45rem .85rem;border-radius:.5rem;font-size:.8rem;cursor:pointer;">
                             <i class="fas fa-upload"></i> Upload
                         </button>
                     </div>
-                    <p id="gallery-msg" style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Bisa pilih lebih dari 1. Maks 5MB.</p>
-                </div>
-                <script>
-                async function uploadGallery() {
-                    const input = document.getElementById('gallery-files');
-                    const btn   = document.getElementById('gallery-btn');
-                    const msg   = document.getElementById('gallery-msg');
-
-                    if (!input.files.length) {
-                        msg.textContent = 'Pilih gambar terlebih dahulu.';
-                        msg.style.color = '#ef4444';
-                        return;
-                    }
-
-                    const fd = new FormData();
-                    Array.from(input.files).forEach(f => fd.append('images[]', f));
-                    fd.append('_token', '{{ csrf_token() }}');
-
-                    btn.disabled = true;
-                    btn.textContent = 'Mengupload...';
-                    msg.style.color = '#9ca3af';
-                    msg.textContent = 'Sedang mengupload...';
-
-                    try {
-                        const res = await fetch('{{ route('admin.produk.images.store', $product) }}', {
-                            method: 'POST',
-                            body: fd,
-                        });
-
-                        if (res.ok || res.redirected) {
-                            msg.style.color = '#16a34a';
-                            msg.textContent = 'Berhasil! Memuat ulang halaman...';
-                            setTimeout(() => window.location.reload(), 800);
-                        } else {
-                            const text = await res.text();
-                            msg.style.color = '#ef4444';
-                            msg.textContent = 'Gagal upload. Status: ' + res.status;
-                            console.error('Upload error:', text);
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-upload"></i> Upload';
-                        }
-                    } catch (err) {
-                        msg.style.color = '#ef4444';
-                        msg.textContent = 'Error: ' + err.message;
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-upload"></i> Upload';
-                    }
-                }
-                </script>
+                    <p style="font-size:.7rem;color:#9ca3af;margin-top:.25rem">Bisa pilih lebih dari 1. Maks 5MB per gambar.</p>
+                </form>
 
             @else
                 {{-- Saat buat baru: galeri masuk form utama --}}
